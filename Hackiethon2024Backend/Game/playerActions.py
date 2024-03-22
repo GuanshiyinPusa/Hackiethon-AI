@@ -127,7 +127,7 @@ def attackHit(
     # Surehit is for projectiles since collision check is already done
     if (
         surehit
-        or (abs(target_x - player_x) <= atk_range * player._direction)
+        or (abs(target_x - player_x) <= atk_range)
         and (abs(target_y - player_y) <= vertical)
         and (target_y >= player_y)
     ):
