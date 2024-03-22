@@ -1,8 +1,5 @@
-# Hackiethon 2024 March 22nd
-- Team Members: Shuyuan Gao, Langze Lu, Liao Cao
-
 # Introduction:
-- The tournament will follow a bracket-style format where teams control characters using ai who will engage in one-on-one battles.
+### The tournament will follow a bracket-style format where teams control characters using ai who will engage in one-on-one battles.
 
 
 
@@ -352,7 +349,7 @@ Moves to be selected by players - Players can select 1 primary and 1 secondary a
 |Skill name| "uppercut"|
 
 
-|Skill | One Punch|
+|Skill | One Punch (LOCKED UNLESS YOU WIN MINIGAME) |
 |------|----------|
 |Description| Slow, significant damage attack that breaks shields with great knockback and stun|
 |Startup| 1|
@@ -388,7 +385,7 @@ Moves to be selected by players - Players can select 1 primary and 1 secondary a
 
 
 
-|Skill | Boomerang|
+|Skill | Boomerang (LOCKED UNLESS YOU WIN MINIGAME)|
 |------|----------|
 |Description|Travels forwards, then back towards the character who casted it, dealing medium damage to the enemy upon being hit|
 |Startup| 0|
@@ -453,7 +450,7 @@ Moves to be selected by players - Players can select 1 primary and 1 secondary a
 |Recovery| 0|
 |Skill name| "super_saiyan"|
 
-|Skill		| Super Armor|
+|Skill		| Super Armor (LOCKED UNLESS YOU WIN MINIGAME)|
 |---------------|-------------------|
 |Description    |Player gains armour which makes players take less damage and makes player invulnerable to stun and knockback.|
 |Duration| 20 ticks|
@@ -468,7 +465,7 @@ Moves to be selected by players - Players can select 1 primary and 1 secondary a
 |Recovery| 0|
 |Skill name| "super_armor"
 
-|Skill | Super Jump|
+|Skill | Super Jump |
 |------|-----------|
 |Description | Allows Player to jump higher|
 |Duration| 20 ticks|
@@ -488,3 +485,9 @@ Moves to be selected by players - Players can select 1 primary and 1 secondary a
 Certain skills will be locked during the tournament bracket on 24 Mar 2024 (Sunday). You can only gain access to these skills 
 through winning mini-games on 23 Mar 2024 (Saturday), and we will be making sure only people who have access to them can use them.
 These skills are: One Punch, Super Armor and Boomerang.
+
+
+
+
+
+
