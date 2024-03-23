@@ -17,7 +17,6 @@ Backend repo: https://github.com/HackMelbourne/Hackiethon2024Backend
    <img src="https://i.imgur.com/0HkHHtY.png" alt="Edit Bot Start" width="400"/>
    <img src="https://i.imgur.com/bb7Hdqp.png" alt="Edit Bot Finish" width="400"/>
 
-
 ### Setup Frontend (MacOS):
 Video [Here](https://www.youtube.com/watch?v=hIx1eBsu5VE) 
 
@@ -28,10 +27,33 @@ Video [Here](https://www.youtube.com/watch?v=hIx1eBsu5VE)
 
 ### Setup Frontend (Windows):
 	- In Resources/Data/StreamingAssets/Round_1, update the p1.json, p2.json and round.json files
-	- Run the .exe file
+	- Run the .exe file ("Hackieton Windows/Hackethon_FrontEnd.exe")
  
 ### Setup Backend:
 Video [Here](https://www.youtube.com/watch?v=0EywhHUsM4I)
+
+## Visualizing your code
+Ensure that bot codes work\
+Set PATH1 and PATH2 in GameManager.py to the filenames of your bots (excluding .py)\
+Run `python Game/GameManager.py` OR `python3 Game/GameManager.py` (depending on your python version)
+
+There should be json files outputted into "Hackiethon2024Backend/jsonfiles"
+
+Move the json files to:\
+Windows: “Hackieton Windows/Hackethon_FrontEnd/Resources/Data/StreamingAssets/Round_1”\
+Mac (Silicon/Intel): "Hackiethon Mac Intel/Hackethon_FrontEnd/Resources/Data/StreamingAssets/Round_1"
+
+Ensure that this is done before running the front end
+
+### Running the hackethon_frontend visuals:
+
+For Mac users, build the project using Xcode to visualise\
+Mac Intel: "Hackiethon Mac Intel/Hackiethon Mac Intel.xcodeproj"\
+Mac Silicon: "Hackiethon Mac Sillicon/Hackiethon Mac Sillicon.xcodeproj"
+
+For windows users, run "Hackiethon Windows/Hackethon_FrontEnd.exe".
+
+Use alt-tab and close the window to stop running the executable.
 
 # Introduction:
 ### The tournament will follow a bracket-style format where teams control characters using ai who will engage in one-on-one battles.
@@ -64,9 +86,10 @@ The time limit is 60 seconds with each player having 120 ticks per game
 
 ### Movements
 These actions are common for all characters
+
 	- All movements have priority, meaning that characters will always move first before an attack can land
-	- Jump : moves the character up by 2 X-positions, then back to the original position, taking 4 ticks in total
-	- Jump forward : moves the character up by 1 X-position and 1 Y-position, moving in an arc and landing 3 X-positions forward on the ground, taking 3 ticks total
+	- Jump : moves the character up by 1 Y-position, then back to the original position, taking 3 ticks in total
+	- Jump forward : moves the character up by 2 X-positions and 1 Y-position, moving in an arc and landing 3 X-positions forward on the ground, taking 3 ticks total
 	- Jump backwards: similar to jump forward, but backwards
 	- Move forward/back : moves character forward or back by 1 X-Position, takes 1 tick
 
@@ -125,6 +148,9 @@ Recovery: 1
 
 0, 3, 5, 1, 0, True, 1, 2, 1
 ```
+>[!NOTE]
+>Cooldowns start counting down at the end of the tick, so a movement with a cooldown of 1 can be used rapid succession, while moves with a cooldown of 2 take 1 extra tick before they can be used.
+>Hint: Use the get cooldown functions in the doc to check cooldowns
 
 > [!TIP]
 > Combo attack  - If the previous two moves were light attacks, the next light or heavy attack will deal increased damage, knockback and stun
@@ -321,7 +347,7 @@ Moves to be selected by players - Players can select 1 primary and 1 secondary a
 |Description       | Instantly moves the character a certain distance (6 units) away from the enemy|
 |Startup | 0|														    
 |Cooldown           | 6|
-|Horizontal Range| 10|
+|Horizontal Range| 6|
 |Vertical Range| 0|
 |Damage| N/A|
 |Horizontal Range| N/A|
@@ -364,6 +390,7 @@ Moves to be selected by players - Players can select 1 primary and 1 secondary a
 |Stun| 0|
 |Recovery| 0|
 |Skill name| "dash_attack"|
+|Unique trait| Dash attack can dash through players and projectiles, but can be counted by the other player also using a dash attack at the same time|
 
 |Skill | Uppercut|
 |------|--------|
@@ -380,7 +407,7 @@ Moves to be selected by players - Players can select 1 primary and 1 secondary a
 |Skill name| "uppercut"|
 
 
-|Skill | One Punch|
+|Skill | One Punch (LOCKED UNLESS YOU WIN MINIGAME) |
 |------|----------|
 |Description| Slow, significant damage attack that breaks shields with great knockback and stun|
 |Startup| 1|
@@ -416,7 +443,7 @@ Moves to be selected by players - Players can select 1 primary and 1 secondary a
 
 
 
-|Skill | Boomerang|
+|Skill | Boomerang (LOCKED UNLESS YOU WIN MINIGAME)|
 |------|----------|
 |Description|Travels forwards, then back towards the character who casted it, dealing medium damage to the enemy upon being hit|
 |Startup| 0|
@@ -465,6 +492,11 @@ Moves to be selected by players - Players can select 1 primary and 1 secondary a
 |Time-to-live| 10|
 |Skill name| "beartrap"|
 
+Collision Priorities
+Certain projectiles are stronger than and can destroy other projectiles.
+The priorities are Hadoken/Boomerang > Bear Trap > Grenade
+So Hadoken/Boomerang can destroy each other, bear trap and grenade
+
 |Skill         | Super Saiyan |
 |-------------------|-----------------------------------------------------------------------------------------------------------------------------------------------|
 |Description       | Increases the strength of the character for a certain duration|
@@ -481,7 +513,7 @@ Moves to be selected by players - Players can select 1 primary and 1 secondary a
 |Recovery| 0|
 |Skill name| "super_saiyan"|
 
-|Skill		| Super Armor|
+|Skill		| Super Armor (LOCKED UNLESS YOU WIN MINIGAME)|
 |---------------|-------------------|
 |Description    |Player gains armour which makes players take less damage and makes player invulnerable to stun and knockback.|
 |Duration| 20 ticks|
@@ -496,7 +528,7 @@ Moves to be selected by players - Players can select 1 primary and 1 secondary a
 |Recovery| 0|
 |Skill name| "super_armor"
 
-|Skill | Super Jump|
+|Skill | Super Jump |
 |------|-----------|
 |Description | Allows Player to jump higher|
 |Duration| 20 ticks|
@@ -512,13 +544,13 @@ Moves to be selected by players - Players can select 1 primary and 1 secondary a
 |Skill name| "jump_boost"
 
 
+## Locked skills
+Certain skills will be locked during the tournament bracket on 24 Mar 2024 (Sunday). You can only gain access to these skills 
+through winning mini-games on 23 Mar 2024 (Saturday), and we will be making sure only people who have access to them can use them.
+These skills are: One Punch, Super Armor and Boomerang.
 
 
 
-Visualizing your code
-Ensure that player.py and player2.py has the correct code
-Run GameManager.py
-There should be a json file outputted 
-Move the json files to “Hackethon_FrontEnd_Data/Json_Files”
-Run the hackethon_frontend
+
+
 
