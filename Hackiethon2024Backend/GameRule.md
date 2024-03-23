@@ -9,10 +9,6 @@
 	- Time Limit: If the match reaches the time limit, the player with more remaining health wins.
 	- Coin Flip: If both players have the same amount of health when the time runs out, the winner will be determined by a coin flip.
 
-
-
-
-
 ## Game mechanics:
 #### Hp:
 Each player has 100 hp which does not regenerate unless a player has the “meditate” skill,
@@ -485,9 +481,3 @@ Moves to be selected by players - Players can select 1 primary and 1 secondary a
 Certain skills will be locked during the tournament bracket on 24 Mar 2024 (Sunday). You can only gain access to these skills 
 through winning mini-games on 23 Mar 2024 (Saturday), and we will be making sure only people who have access to them can use them.
 These skills are: One Punch, Super Armor and Boomerang.
-
-
-
-
-
-
