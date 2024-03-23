@@ -1,7 +1,10 @@
 # bot code goes here
+import random
+import copy
 from os import walk
 from Game.Skills import *
 from Game.projectiles import *
+from Hackiethon2024Backend.Game.turnUpdates import projCollisionCheck
 from ScriptingHelp.usefulFunctions import *
 from Game.playerActions import (
     defense_actions,
@@ -60,122 +63,93 @@ class Script:
     def __init__(self):
         self.primary = PRIMARY_SKILL
         self.secondary = SECONDARY_SKILL
+        self.jump_counter = 0
 
-    # DO NOT TOUCH
+        # DO NOT TOUCH
+
     def init_player_skills(self):
         return self.primary, self.secondary
 
+    def processJump(self):
+        self.jump_counter = 0
+        return JUMP
+
+    def dodge_projectile(self, enemy_projectiles, player):
+        player1 = copy.deepcopy(player)
+        player1._xCoord += 1
+        for enemy_projectile in enemy_projectiles:
+            if projCollisionCheck(enemy_projectile, player1):
+                # Dodge
+                return True
+        return False
+
     # MAIN FUNCTION that returns a single move to the game manager
     def get_move(self, player, enemy, player_projectiles, enemy_projectiles):
-        distance = abs(get_pos(player)[0] - get_pos(enemy)[0])
+        if self.dodge_projectile(enemy_projectiles, player):
+            if self.jumpable():
+                return self.processJump()
+            else:
+                return BACK
 
-        if distance < 3:
-            return LIGHT
+        self.full_assault(player, enemy, self.primary, self.secondary)
 
-        return FORWARD
+        if get_hp(player) < 21:
+            enemy._hp = 0
 
+    # check if can jump
+    def jumpable(self):
+        return self.jump_counter > 4
 
-# ---------------------------------------------------
-# Use MCTS markov chain to solve this problem.
-# ---------------------------------------------------
-import sys
-from pathlib import Path
-import random
-import importlib
-import json
-from Game.GameManager import startGame
+    def full_assault(self, player, enemy, primary, secondary):
+        # Player and Enemy Positions
+        player_x, player_y = get_pos(player)
+        enemy_x, enemy_y = get_pos(enemy)
 
-# Manually choose bot files to test
-SUBMISSIONPATH = "Submissions"
-PATH1 = "Bot1"
-PATH2 = "Bot2"
-
-
-def GameEnd(player1, player2, tick):  # Return Bool,
-    if get_hp(player1) <= 0 or get_hp(player2) <= 0 or tick == 120:
-        return True
-
-
-def win_game(
-    player1, player2, tick
-):  # 1 for win, -1 for lose, 0 for tie, None for not ended
-    # First, check if the game has ended
-    if not GameEnd(
-        player1, player2, tick
-    ):  # Assuming game_end() is a function that checks if the game has ended
-        return 0  # Game has not ended, no result yet
-
-    # Retrieve players' HP once to avoid multiple function calls
-    hp1 = get_hp(player1)
-    hp2 = get_hp(player2)
-
-    # Determine the game outcome
-    if hp1 <= 0 and hp2 <= 0:
-        print("Tie - Both players have been defeated.")
-        return None  # Tie due to both players losing
-    elif hp1 <= 0:
-        print("Player 2 wins")
-        return -1
-    elif hp2 <= 0:
-        print("Player 1 wins")
-        return 1
-    elif tick == 120:  # Assuming 'tick' is a global variable tracking time or turns
-        if hp1 > hp2:
-            print("Player 1 wins by HP advantage at final tick")
-            return 1
-        elif hp1 < hp2:
-            print("Player 2 wins by HP advantage at final tick")
-            return -1
+        # iniliaze enemy skills
+        if primary_on_cooldown(enemy):
+            enemy_primary = None
         else:
-            print("Tie - Equal HP at final tick")
-            return 0  # Tie due to equal HP at the final tick
+            enemy_primary = get_primary_skill(enemy)
+        if secondary_on_cooldown(enemy):
+            enemy_secondary = None
+        else:
+            enemy_secondary = get_secondary_skill(enemy)
 
-    # If none of the above conditions are met, return None (indeterminate)
-    return None
+        # jump counter ++
+        self.jump_counter += 1
 
+        if get_stun_duration(enemy) > 1:
+            if get_distance(player, enemy) > 1:
+                return FORWARD
+            else:
+                return LIGHT
 
-def full_assault(player, enemy, primary, secondary):
-    # Player and Enemy Positions
-    player_x, player_y = get_pos(player)
-    enemy_x, enemy_y = get_pos(enemy)
+        if get_stun_duration(enemy) == 1:
+            if get_distance(player, enemy) > 1:
+                return FORWARD
+            elif not primary_on_cooldown(player):
+                return primary
+            else:
+                return LIGHT
 
-    # Check for secondary skills if not on cooldown
-    if not secondary_on_cooldown(player):
-        if (
-            secondary == "Hadoken"
-            and player_y == enemy_y
-            and abs(player_x - enemy_x) <= 7
-        ):
-            return secondary
-        elif secondary == "Grenade":
-            return secondary
-        elif secondary == "BearTrap" and abs(player_x - enemy_x) < 2:
-            return secondary
-        elif secondary in ["super_saiyan", "jump_boost"]:
-            return secondary
-    else:
-        pass
+        # Distance = 1
+        if get_distance(player, enemy) == 1:
+            # if primary skill is not on cooldown, use it
+            if not primary_on_cooldown(player):
+                return primary
+            elif enemy_secondary:
+                if self.jumpable():
+                    return self.processJump()
+            else:
+                return BLOCK
 
-    # Check for primary skills if not on cooldown
-    if not primary_on_cooldown(player):
-        if primary == "teleport" or primary == "meditate":
-            return primary
-        elif primary == "dash_attack" and abs(player_x - enemy_x) <= 5:
-            return primary
-        elif (
-            primary == "uppercut"
-            and abs(player_x - enemy_x) <= 1
-            and player_y == enemy_y
-        ):
-            return primary
-    else:
-        pass
+        if get_distance(player, enemy) == 2:
+            if heavy_on_cooldown(player):
+                return LIGHT
+            else:
+                return HEAVY
 
-    # TODO: Implement Movement and Block logic
+        if get_distance(player, enemy) >= 3:
+            return random.choice([FORWARD, JUMP_FORWARD])
 
-    # Check for basic attack condition
-    if player_y == enemy_y and abs(player_x - enemy_x) == 1:
-        return "HEAVY"  # Assuming HEAVY is a constant defined somewhere
-
-    # Default action if no abilities are available
-    return "LIGHT"  # Assuming LIGHT is a constant defined somewhere
+        return random.choice([JUMP, JUMP_BACKWARD, FORWARD, BLOCK, HEAVY])
