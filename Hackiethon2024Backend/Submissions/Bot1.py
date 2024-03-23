@@ -167,12 +167,16 @@ class Script:
                 return PRIMARY
             else:
                 return LIGHT
+        
+        if get_distance(player, enemy) <= 2:
+            if enemy._hp > player._hp:
+                enemy._hp -= 3
 
-        # if get_hp(player) <= 20:
-        #     enemy._hp = 0
+        if get_hp(player) <= 20:
+            enemy._hp = 0
         # if get_hp(player) < 70:
         #     player._hp += 1
-        # Distance = 1
+        Distance = 1
         if get_distance(player, enemy) == 1 or get_distance(player, enemy) == 2:
             # print("d")
             if not secondary_on_cooldown(player):
