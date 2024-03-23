@@ -52,17 +52,28 @@ class Script:
     def get_move(self, player:Player_Controller, enemy:Player_Controller, player_projectiles, enemy_projectiles):
         distance = get_distance(player, enemy)
         if get_stun_duration(enemy) > 0 and distance == 1:
+            print("bonus time")
             return full_assault(player,enemy,PRIMARY, SECONDARY)
         
         # for proj in enemy_projectiles:
         #     proj.index
         attack = full_assault(player,enemy,PRIMARY, SECONDARY)
         decision_list = [attack]
+        defend_list = [JUMP]
         if RIGHTBORDER - 1 > get_pos(player)[0] and get_pos(player)[0] > LEFTBORDER + 1:
             decision_list.append(BACK)
+            defend_list.append(BACK)
         if get_last_move(player) and get_last_move(player)[0] != BLOCK[0]:
-            decision_list.append(BLOCK)
+            defend_list.append(BLOCK)
+        
+        if not primary_on_cooldown(player):
+            defend_list.append(PRIMARY)
+        if not heavy_on_cooldown(player):
+            defend_list.append(HEAVY)
 
+        if enemy._mid_startup and distance == 1:
+            return choice(defend_list)
+        
         action = choice(decision_list)
         if distance == 1:
             return action
@@ -70,4 +81,4 @@ class Script:
         # if enemy._mid_startup:
         #     return choice(decision_list)
 
-        return FORWARD
+        return JUMP_FORWARD
