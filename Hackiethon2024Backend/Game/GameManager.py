@@ -419,7 +419,7 @@ def startGame(path1, path2, submissionpath, roundNum):
     player2_json.write_text(json.dumps(p2_json_dict))
 
     # Test json output
-    print_results = False
+    print_results = True
     if print_results:
         for key in p1_json_dict.keys():
             print(key)
