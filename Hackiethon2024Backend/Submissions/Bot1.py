@@ -153,6 +153,8 @@ def full_assault(player, enemy, primary, secondary):
             return secondary
         elif secondary in ["super_saiyan", "jump_boost"]:
             return secondary
+    else:
+        pass
 
     # Check for primary skills if not on cooldown
     if not primary_on_cooldown(player):
@@ -166,6 +168,10 @@ def full_assault(player, enemy, primary, secondary):
             and player_y == enemy_y
         ):
             return primary
+    else:
+        pass
+
+    # TODO: Implement Movement and Block logic
 
     # Check for basic attack condition
     if player_y == enemy_y and abs(player_x - enemy_x) == 1:
