@@ -1,4 +1,4 @@
-# bot code goes here
+# Transformer
 import random
 import copy
 from os import walk
@@ -6,6 +6,7 @@ from Game.Skills import *
 from Game.projectiles import *
 from Game.turnUpdates import projCollisionCheck
 from ScriptingHelp.usefulFunctions import *
+from Game.PlayerConfigs import Player_Controller
 from Game.playerActions import (
     defense_actions,
     attack_actions,
@@ -28,7 +29,7 @@ from ScriptingHelp.usefulFunctions import *
 # SECONDARY CAN BE : Hadoken, Grenade, Boomerang, Bear Trap
 
 # TODO FOR PARTICIPANT: Set primary and secondary skill here
-PRIMARY_SKILL = TeleportSkill
+PRIMARY_SKILL = UppercutSkill
 SECONDARY_SKILL = Hadoken
 
 # constants, for easier move return
@@ -95,10 +96,10 @@ class Script:
             else:
                 return BACK
 
-        self.full_assault(player, enemy, self.primary, self.secondary)
+        return self.full_assault(player, enemy, PRIMARY, SECONDARY)
 
-        if get_hp(player) < 21:
-            enemy._hp = 0
+        # if get_hp(player) < 21:
+        #     enemy._hp = 0
 
     # check if can jump
     def jumpable(self):
@@ -132,28 +133,66 @@ class Script:
             if get_distance(player, enemy) > 1:
                 return FORWARD
             elif not primary_on_cooldown(player):
-                return primary
+                return PRIMARY
             else:
                 return LIGHT
 
         # Distance = 1
-        if get_distance(player, enemy) == 1:
+        if get_distance(player, enemy) == 1 or get_distance(player, enemy) == 2:
+            print("d")
+            if not secondary_on_cooldown(player):
+                print(secondary)
+                return secondary
             # if primary skill is not on cooldown, use it
             if not primary_on_cooldown(player):
-                return primary
+                print(primary)
+                return PRIMARY
             elif enemy_secondary:
                 if self.jumpable():
                     return self.processJump()
             else:
+                print(BLOCK)
                 return BLOCK
 
-        if get_distance(player, enemy) == 2:
-            if heavy_on_cooldown(player):
-                return LIGHT
-            else:
-                return HEAVY
+        def get_move1(self, player, enemy):
+            distance = get_distance(player, enemy)
+            if get_stun_duration(enemy) > 0 and distance == 1:
+                return full_assault(player, enemy, PRIMARY, SECONDARY)
+
+            # for proj in enemy_projectiles:
+            #     proj.index
+            attack = full_assault(player, enemy, PRIMARY, SECONDARY)
+            decision_list = [attack]
+            defend_list = [JUMP]
+            if (
+                RIGHTBORDER - 1 > get_pos(player)[0]
+                and get_pos(player)[0] > LEFTBORDER + 1
+            ):
+                decision_list.append(BACK)
+                defend_list.append(BACK)
+            if get_last_move(player) and get_last_move(player)[0] != BLOCK[0]:
+                defend_list.append(BLOCK)
+
+            if not primary_on_cooldown(player):
+                defend_list.append(PRIMARY)
+            if not heavy_on_cooldown(player):
+                defend_list.append(HEAVY)
+
+            if enemy._mid_startup and distance == 1:
+                action = random.choice(defend_list)
+                return random.choice(defend_list)
+
+            action = random.choice(decision_list)
+            if distance == 1:
+                return action
+
+            # if enemy._mid_startup:
+            #     return choice(decision_list)
+
+            return JUMP_FORWARD
 
         if get_distance(player, enemy) >= 3:
-            return random.choice([FORWARD, JUMP_FORWARD])
+            print("distance 3")
+            return get_move1(self, player, enemy)
 
-        return random.choice([JUMP, JUMP_BACKWARD, FORWARD, BLOCK, HEAVY])
+        return random.choice([JUMP])
