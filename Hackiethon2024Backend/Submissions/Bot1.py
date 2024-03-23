@@ -4,7 +4,7 @@ import copy
 from os import walk
 from Game.Skills import *
 from Game.projectiles import *
-from Hackiethon2024Backend.Game.turnUpdates import projCollisionCheck
+from Game.turnUpdates import projCollisionCheck
 from ScriptingHelp.usefulFunctions import *
 from Game.playerActions import (
     defense_actions,
@@ -78,8 +78,12 @@ class Script:
         player1 = copy.deepcopy(player)
         player1._xCoord += 1
         for enemy_projectile in enemy_projectiles:
-            if projCollisionCheck(enemy_projectile, player1):
-                # Dodge
+            project_dis = enemy_projectile._xCoord - player1._xCoord
+            if (
+                abs(project_dis) == 1
+                and (enemy_projectile._playerInitPos[0] - player1._xCoord) * project_dis
+                > 0
+            ):
                 return True
         return False
 
