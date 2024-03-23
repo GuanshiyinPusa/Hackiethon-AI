@@ -171,6 +171,7 @@ def winning_strategy(player, enemy, primary, secondary):
         and abs(get_pos(player)[0] - get_pos(enemy)[0]) <= 1
     ):
         return HEAVY
+    
 
     # Defensive strategy if low on health or enemy is too close
     if get_hp(player) < 20 or abs(get_pos(player)[0] - get_pos(enemy)[0]) < 2:

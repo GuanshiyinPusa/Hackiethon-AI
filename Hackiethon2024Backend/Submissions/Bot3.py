@@ -83,3 +83,4 @@ class Script:
             return JUMP_FORWARD
 
         return LIGHT
+            
