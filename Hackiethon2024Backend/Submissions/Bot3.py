@@ -11,7 +11,7 @@ from random import choice
 # SECONDARY CAN BE : Hadoken, Grenade, Boomerang, Bear Trap
 
 # TODO FOR PARTICIPANT: Set primary and secondary skill here
-PRIMARY_SKILL = TeleportSkill
+PRIMARY_SKILL = UppercutSkill
 SECONDARY_SKILL = Hadoken
 
 #constants, for easier move return
@@ -56,15 +56,16 @@ class Script:
         
         # for proj in enemy_projectiles:
         #     proj.index
-        decision_list = [attack]
         attack = full_assault(player,enemy,PRIMARY, SECONDARY)
-        if RIGHTBORDER - 1 > get_pos(player) > LEFTBORDER + 1:
+        decision_list = [attack]
+        if RIGHTBORDER - 1 > get_pos(player)[0] and get_pos(player)[0] > LEFTBORDER + 1:
             decision_list.append(BACK)
-        if get_last_move(player) != BLOCK:
+        if get_last_move(player) and get_last_move(player)[0] != BLOCK[0]:
             decision_list.append(BLOCK)
 
+        action = choice(decision_list)
         if distance == 1:
-            return choice(decision_list)
+            return action
 
         # if enemy._mid_startup:
         #     return choice(decision_list)
