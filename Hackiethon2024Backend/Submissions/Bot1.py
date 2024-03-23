@@ -10,7 +10,7 @@ from Game.gameSettings import HP, LEFTBORDER, RIGHTBORDER, LEFTSTART, RIGHTSTART
 # SECONDARY CAN BE : Hadoken, Grenade, Boomerang, Bear Trap
 
 # TODO FOR PARTICIPANT: Set primary and secondary skill here
-PRIMARY_SKILL = TeleportSkill
+PRIMARY_SKILL = OnePunchSkill
 SECONDARY_SKILL = Hadoken
 
 #constants, for easier move return
@@ -50,8 +50,15 @@ class Script:
     def get_move(self, player, enemy, player_projectiles, enemy_projectiles):
         distance = abs(get_pos(player)[0] - get_pos(enemy)[0])
 
-        if distance < 3:
-            return LIGHT
+        # return NOMOVE
+        print( secondary_on_cooldown(player), distance)
+        if distance < 2:
+            if not secondary_on_cooldown(player):
+                return PRIMARY
+                return LIGHT
+            else:
+                print("use LIGHT")
+                return LIGHT
         
         return FORWARD
         

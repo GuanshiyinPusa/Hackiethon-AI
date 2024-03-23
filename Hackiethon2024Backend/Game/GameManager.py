@@ -88,6 +88,7 @@ def executeOneTurn(
     ]
 
     # Pass relevant information to player scripts, and get a move from them
+    # print(player1, player2)
     p1_move = p1_script.get_move(player1, player2, p1_projectiles, p2_projectiles)
     p2_move = p2_script.get_move(player2, player1, p2_projectiles, p1_projectiles)
 
@@ -419,6 +420,7 @@ def startGame(path1, path2, submissionpath, roundNum):
     player2_json.write_text(json.dumps(p2_json_dict))
 
     # Test json output
+    print_results = True
     print_results = False
     if print_results:
         for key in p1_json_dict.keys():
@@ -463,4 +465,7 @@ def startGame(path1, path2, submissionpath, roundNum):
 
 # Allows to run directly from GameManager to simulate single rounds
 if __name__ == "__main__":
-    startGame(PATH1, PATH2, SUBMISSIONPATH, 1)
+    print("begin")
+    w = startGame(PATH1, PATH2, SUBMISSIONPATH, 1)
+    print(w)
+    print("end")

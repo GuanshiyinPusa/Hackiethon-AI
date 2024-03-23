@@ -4,7 +4,8 @@ from Game.projectiles import *
 from ScriptingHelp.usefulFunctions import *
 from Game.playerActions import defense_actions, attack_actions, projectile_actions
 from Game.gameSettings import HP, LEFTBORDER, RIGHTBORDER, LEFTSTART, RIGHTSTART, PARRYSTUN
-
+from Game.PlayerConfigs import Player_Controller
+from random import choice
 
 # PRIMARY CAN BE: Teleport, Super Saiyan, Meditate, Dash Attack, Uppercut, One Punch
 # SECONDARY CAN BE : Hadoken, Grenade, Boomerang, Bear Trap
@@ -41,30 +42,31 @@ class Script:
     def __init__(self):
         self.primary = PRIMARY_SKILL
         self.secondary = SECONDARY_SKILL
-        self.last_jump = 3
+        self.last_jump = 5
         
     # DO NOT TOUCH
     def init_player_skills(self):
         return self.primary, self.secondary
     
     # MAIN FUNCTION that returns a single move to the game manager
-    def get_move(self, player, enemy, player_projectiles, enemy_projectiles):
-        distance = abs(get_pos(player)[0] - get_pos(enemy)[0])
-        print(distance)
-        if get_last_move(enemy) and get_last_move(enemy)[0] in ( "onepunch","light"):
-            if self.last_jump<3:
-                return BACK
-            return JUMP
-        # if distance == 1:
-        #     return BACK
-        # else:
-        return NOMOVE
+    def get_move(self, player:Player_Controller, enemy:Player_Controller, player_projectiles, enemy_projectiles):
+        distance = get_distance(player, enemy)
+        if get_stun_duration(enemy) > 0 and distance == 1:
+            return full_assault(player,enemy,PRIMARY, SECONDARY)
+        
+        # for proj in enemy_projectiles:
+        #     proj.index
+        decision_list = [attack]
+        attack = full_assault(player,enemy,PRIMARY, SECONDARY)
+        if RIGHTBORDER - 1 > get_pos(player) > LEFTBORDER + 1:
+            decision_list.append(BACK)
+        if get_last_move(player) != BLOCK:
+            decision_list.append(BLOCK)
+
+        if distance == 1:
+            return choice(decision_list)
+
+        # if enemy._mid_startup:
+        #     return choice(decision_list)
+
         return FORWARD
-        if not secondary_on_cooldown(player):
-            return SECONDARY
-        
-        if distance < 3:
-            return LIGHT
-        
-        return FORWARD
-        
