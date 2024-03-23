@@ -79,7 +79,7 @@ class Script:
             else:
                 return LIGHT
             
-        if get_last_move(enemy) == OnePunchSkill :
+        if get_last_move(enemy) == PRIMARY :
             return JUMP_FORWARD
 
         return LIGHT
